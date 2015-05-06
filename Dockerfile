@@ -1,19 +1,17 @@
 FROM phusion/baseimage:0.9.16
 
-ENV HOME /root
-
 CMD ["/sbin/my_init"]
-
-RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
 
 RUN apt-get update
 RUN apt-get install -y gcc-multilib
 
-RUN curl -s "https://dl.dropboxusercontent.com/u/3289117/ventrilo_srv-3.0.3-Linux-i386.tar.gz" -o /tmp/ventrilo.tgz
+RUN curl -s "http://iweb.dl.sourceforge.net/project/ventrilovoip/ventrilo_srv-3.0.3-Linux-i386.tar.gz" -o /tmp/ventrilo.tgz
 RUN tar -zxf /tmp/ventrilo.tgz -C /opt
-RUN rm -f /tmp/ventrilo.tgz
 
 ADD ventrilo_srv.ini /opt/ventsrv/ventrilo_srv.ini
+ADD logrotate.conf /etc/logrotate.d/ventrilo
+
+VOLUME /opt/ventsrv
 
 RUN mkdir /etc/service/ventrilo
 ADD ventrilo.sh /etc/service/ventrilo/run
